@@ -1,0 +1,57 @@
+run:
+    concurrency: 4
+    timeout: 1m
+  # output configuration options
+output:
+    # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
+    format: colored-line-number
+    # print lines of code with issue, default is true
+    print-issued-lines: true
+    # print linter name in the end of issue text, default is true
+    print-linter-name: true
+    # make issues output unique by line, default is true
+    uniq-by-line: true
+    
+issues:
+    exclude-use-default: false
+  
+linters:
+    disable-all: true
+    enable:
+        - bodyclose
+        - deadcode
+        - depguard
+        - dogsled
+        - dupl
+        - errcheck
+        - funlen
+        - gochecknoinits
+        - goconst
+        - gocritic
+        - gocyclo
+        - gofmt
+        - goimports
+        - golint
+        - gomnd
+        - goprintffuncname
+        - gosec
+        - gosimple
+        - govet
+        - godot
+        - ineffassign
+        - interfacer
+        - lll
+        - misspell
+        - nakedret
+        - nolintlint
+        - rowserrcheck
+        - scopelint
+        - staticcheck
+        - structcheck
+        - stylecheck
+        - typecheck
+        - unconvert
+        - unparam
+        - unused
+        - varcheck
+        - whitespace

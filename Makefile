@@ -1,0 +1,3 @@
+lint:
+	@./tools/golangci-lint --version
+	@./tools/golangci-lint run -v ./... 
