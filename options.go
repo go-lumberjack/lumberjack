@@ -24,7 +24,7 @@ func newFuncLoggerOption(f func(*loggerOption)) *funcLoggerOption {
 func defaultOptions() *loggerOption {
 	return &loggerOption{
 		bufSize: 1,
-		millCh:  make(chan bool, millChSize),
+		millCh:  make(chan bool, 1),
 	}
 }
 
@@ -47,8 +47,8 @@ func New(opts ...LoggerOption) (Writer, error) {
 	return fo, nil
 }
 
-// WithName ...
-func WithName(name string) LoggerOption {
+// WithFileName ...
+func WithFileName(name string) LoggerOption {
 	return newFuncLoggerOption(func(l *loggerOption) {
 		l.filename = name
 	})

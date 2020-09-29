@@ -33,14 +33,14 @@ func TestNewFile(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestNewFile", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
 	l, err := New(
-		WithName(filename))
+		WithFileName(filename))
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -53,7 +53,7 @@ func TestNewFile(t *testing.T) {
 func TestOpenExisting(t *testing.T) {
 	currentTime = fakeTime
 	dir := makeTempDir("TestOpenExisting", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	data := []byte("foo!")
@@ -62,9 +62,9 @@ func TestOpenExisting(t *testing.T) {
 	existsWithContent(filename, data, t)
 
 	l, err := New(
-		WithName(filename))
+		WithFileName(filename))
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -77,16 +77,16 @@ func TestOpenExisting(t *testing.T) {
 func TestWriteTooLong(t *testing.T) {
 	currentTime = fakeTime
 	dir := makeTempDir("TestWriteTooLong", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	var bytes int64 = 5
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(bytes),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("booooooooooooooo!")
 	n, err := l.Write(b)
@@ -99,13 +99,13 @@ func TestMakeLogDir(t *testing.T) {
 	currentTime = fakeTime
 	dir := time.Now().Format("TestMakeLogDir" + backupTimeFormat)
 	dir = filepath.Join(os.TempDir(), dir)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename))
+		WithFileName(filename))
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -119,11 +119,11 @@ func TestDefaultFilename(t *testing.T) {
 	currentTime = fakeTime
 	dir := os.TempDir()
 	filename := filepath.Join(dir, filepath.Base(os.Args[0])+"-lumberjack.log")
-	defer os.Remove(filename)
+	defer os.Remove(filename) // nolint
 
 	l, err := New()
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -136,15 +136,15 @@ func TestAutoRotate(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestAutoRotate", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -168,7 +168,7 @@ func TestFirstWriteRotate(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestFirstWriteRotate", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
@@ -177,11 +177,11 @@ func TestFirstWriteRotate(t *testing.T) {
 	require.NoError(t, err)
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	newFakeTime()
 
@@ -200,16 +200,16 @@ func TestMaxBackups(t *testing.T) { // nolint
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestMaxBackups", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithMaxBackups(1),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -324,7 +324,7 @@ func TestCleanupExistingBackups(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestCleanupExistingBackups", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	// make 3 backup files
 
@@ -351,12 +351,12 @@ func TestCleanupExistingBackups(t *testing.T) {
 	require.NoError(t, err)
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithMaxBackups(1),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	newFakeTime()
 
@@ -377,16 +377,16 @@ func TestMaxAge(t *testing.T) { // nolint
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestMaxAge", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithMaxDays(1),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -445,7 +445,7 @@ func TestOldLogFiles(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestOldLogFiles", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	data := []byte("data")
@@ -506,15 +506,15 @@ func TestLocalTime(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestLocalTime", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	l, err := New(
-		WithName(logFile(dir)),
+		WithFileName(logFile(dir)),
 		WithMaxBytes(10),
 		WithLocalTime(),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -533,17 +533,17 @@ func TestLocalTime(t *testing.T) {
 func TestRotate(t *testing.T) {
 	currentTime = fakeTime
 	dir := makeTempDir("TestRotate", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(100),
 		WithMaxBackups(1),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -594,16 +594,16 @@ func TestCompressOnRotate(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestCompressOnRotate", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithCompress(),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -646,7 +646,7 @@ func TestCompressOnResume(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestCompressOnResume", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	// Create a backup file and empty "compressed" file.
 	filename2 := backupFile(dir)
@@ -659,12 +659,12 @@ func TestCompressOnResume(t *testing.T) {
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithCompress(),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	newFakeTime()
 
@@ -695,16 +695,16 @@ func TestCompressOnResume(t *testing.T) {
 
 func TestGoRoutinesNotLeaked(t *testing.T) {
 	dir := makeTempDir("TestGoRoutinesNotLeaked", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	numGoRoutinesBefore := pprof.Lookup("goroutine").Count()
 	filename := logFile(dir)
 	for i := 0; i < 25; i++ {
 		func() {
 			l, err := New(
-				WithName(filename))
+				WithFileName(filename))
 			require.NoError(t, err)
-			defer l.Close()
+			defer l.Close() // nolint
 
 			b := []byte("boo!")
 			_, err = l.Write(b)
@@ -720,15 +720,15 @@ func TestGoRoutinesNotLeaked(t *testing.T) {
 
 func TestBufferSize(t *testing.T) {
 	dir := makeTempDir("TestBufferSize", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithBufferSize(10), // set buffer 10 bytes
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("fooo!") // append 5 bytes
 	n, err := l.Write(b)
@@ -748,11 +748,11 @@ func TestBufferSize(t *testing.T) {
 
 func TestWriteInCloseFile(t *testing.T) {
 	dir := makeTempDir("TestWriteInCloseFile", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename))
+		WithFileName(filename))
 	require.NoError(t, err)
 
 	b := []byte("fooo!") // append 5 bytes
@@ -772,11 +772,11 @@ func TestWriteInCloseFile(t *testing.T) {
 
 func TestReWrite(t *testing.T) {
 	dir := makeTempDir("TestReWrite", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBytes(10),
 		WithReWrite()) // set 10 bytes max file
 	require.NoError(t, err)

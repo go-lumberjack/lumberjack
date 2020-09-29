@@ -40,7 +40,6 @@ import (
 const (
 	backupTimeFormat = "2006-01-02T15-04-05.000"
 	compressSuffix   = ".gz"
-	millChSize       = 1
 )
 
 const (
@@ -314,7 +313,7 @@ func (l *loggerOption) openExistingOrNew() error {
 		return fmt.Errorf("error getting log file info: %s", err)
 	}
 
-	file, err := os.OpenFile(filepath.Clean(name), os.O_APPEND|os.O_WRONLY, 0600)
+	file, err := os.OpenFile(name, os.O_APPEND|os.O_WRONLY, 0600) // nolint
 	if err != nil {
 		// if we fail to open the old log file for some reason, just ignore
 		// it and open a new log file.
@@ -416,10 +415,9 @@ L:
 	for {
 		select {
 		case <-ctx.Done():
-			l.Close()
 			break L
 		case <-l.millCh:
-			l.millRunOnce()
+			l.millRunOnce() // nolint
 		}
 	}
 }
@@ -427,9 +425,7 @@ L:
 // mill performs post-rotation compression and removal of stale log files,
 // starting the mill goroutine if necessary.
 func (l *loggerOption) mill() {
-	if len(l.millCh) != millChSize {
-		l.millCh <- true
-	}
+	l.millCh <- true
 }
 
 // oldLogFiles returns the list of backup log files stored in the same
@@ -495,11 +491,11 @@ func (l *loggerOption) prefixAndExt() (prefix, ext string) {
 // compressLogFile compresses the given log file, removing the
 // uncompressed log file if successful.
 func compressLogFile(src, dst string) (err error) {
-	f, err := os.Open(filepath.Clean(src))
+	f, err := os.Open(src) // nolint
 	if err != nil {
 		return fmt.Errorf("failed to open log file: %v", err)
 	}
-	defer f.Close()
+	defer f.Close() // nolint
 
 	file, err := Stat(src)
 	if err != nil {
@@ -512,18 +508,18 @@ func compressLogFile(src, dst string) (err error) {
 
 	// If this file already exists, we presume it was created by
 	// a previous attempt to compress the log file.
-	gzf, err := os.OpenFile(filepath.Clean(dst), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode())
+	gzf, err := os.OpenFile(dst, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, file.Mode()) // nolint
 	if err != nil {
 		return fmt.Errorf("failed to open compressed log file: %v", err)
 	}
-	defer gzf.Close()
+	defer gzf.Close() // nolint
 
 	gz := gzip.NewWriter(gzf)
 
 	defer func() {
 		if err != nil {
-			os.Remove(dst)
-			err = fmt.Errorf("failed to compress log file: %v", err)
+			os.Remove(dst) // nolint
+			err = fmt.Errorf("failed to compress log file: %v", os.Remove(dst))
 		}
 	}()
 

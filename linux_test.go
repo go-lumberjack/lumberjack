@@ -25,12 +25,12 @@ func TestMaintainMode(t *testing.T) {
 	file.Close() // nolint
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBackups(1),
 		WithMaxBytes(100),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -62,21 +62,21 @@ func TestMaintainOwner(t *testing.T) {
 	}()
 	currentTime = fakeTime
 	dir := makeTempDir("TestMaintainOwner", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0600) // nolint
 	require.NoError(t, err)
-	f.Close()
+	f.Close() // nolint
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBackups(1),
 		WithMaxBytes(100),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -97,23 +97,23 @@ func TestCompressMaintainMode(t *testing.T) {
 	currentTime = fakeTime
 
 	dir := makeTempDir("TestCompressMaintainMode", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
 	mode := os.FileMode(0600)
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, mode) // nolint
 	require.NoError(t, err)
-	f.Close()
+	f.Close() // nolint
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBackups(1),
 		WithMaxBytes(100),
 		WithCompress(),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
@@ -151,22 +151,22 @@ func TestCompressMaintainOwner(t *testing.T) {
 	}()
 	currentTime = fakeTime
 	dir := makeTempDir("TestCompressMaintainOwner", t)
-	defer os.RemoveAll(dir)
+	defer os.RemoveAll(dir) // nolint
 
 	filename := logFile(dir)
 
 	f, err := os.OpenFile(filename, os.O_CREATE|os.O_RDWR, 0600) // nolint
 	require.NoError(t, err)
-	f.Close()
+	f.Close() // nolint
 
 	l, err := New(
-		WithName(filename),
+		WithFileName(filename),
 		WithMaxBackups(1),
 		WithMaxBytes(100),
 		WithCompress(),
 	)
 	require.NoError(t, err)
-	defer l.Close()
+	defer l.Close() // nolint
 
 	b := []byte("boo!")
 	n, err := l.Write(b)
