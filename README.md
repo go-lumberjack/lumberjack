@@ -6,8 +6,8 @@ Code:
 
 ```go
 fileHandler, err := lumberjack.New(
-    lumberjack.WithName("/var/log/myapp/foo.log"),
-    lumberjack.WithMaxBytes(500*lumberjack.MB),
+    lumberjack.WithFileName("/var/log/myapp/foo.log"),
+    lumberjack.WithMaxBytes(25*lumberjack.MB),
     lumberjack.WithMaxBackups(3),
     lumberjack.WithMaxDays(28),
     lumberjack.WithCompress(),
